@@ -3,22 +3,20 @@ const db = new sqlite3.Database("movies.db")
 
 db.serialize(function(){
     db.run("DROP TABLE IF EXISTS Reviews");
-  db.run(`
-    CREATE TABLE Reviews (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,  
-    moviename TEXT NOT NULL,               
-    genre TEXT NOT NULL,                   
-    review TEXT,                          
-    date_watched DATE NOT NULL,             
-    user_rating REAL NOT NULL,                
-    favourite INTEGER NOT NULL        
-    )
-  `);
+    db.run(`CREATE TABLE IF NOT EXISTS Reviews (
+        moviename TEXT NOT NULL,
+        genre TEXT,
+        review TEXT,
+        date_watched DATE,
+        rating REAL,
+        favourite INTEGER
+      )`);
 
-    // Initial Data
-  db.run("INSERT INTO Reviews (movieTitle, reviewerName, rating, reviewText, reviewDate) VALUES (?,?,?,?,?)", 
-  ['Inception', 'John Doe', 5, 'Amazing movie!', '2025-02-24']);
-  db.run("INSERT INTO Reviews (movieTitle, reviewerName, rating, reviewText, reviewDate) VALUES (?,?,?,?,?)", 
-  ['Titanic', 'Jane Smith', 4, 'A classic!', '2025-02-23']);
+
+  db.run("INSERT INTO Reviews VALUES (?,?,?,?,?,?)", ['John Wick','Action','Why did they kill the dog!', '2021-11-29','5', 1 ]);
+  db.run("INSERT INTO Reviews VALUES (?,?,?,?,?,?)", ['Maze Runner','Action','Dylan O Brien is a heartthrob <3', '2025-02-24','4', 0 ]);
+  db.run("INSERT INTO Reviews VALUES (?,?,?,?,?,?)", ['Memories of a Murder','Thriller','I am rattled, amazing movie', '2013-02-11','5', 1 ]);
+  db.run("INSERT INTO Reviews VALUES (?,?,?,?,?,?)", ['Companion','Action','Great twist, did not know she was a robot', '2025-02-15','4', 0 ]);
+
 
 })

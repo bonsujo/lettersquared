@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -20,7 +21,8 @@
             gap: 10px;
         }
 
-        .chip, .chip2 {
+        .chip,
+        .chip2 {
             padding: 8px 15px;
             background-color: #f1f1f1;
             border-radius: 15px;
@@ -41,7 +43,8 @@
             margin-top: 40px;
         }
 
-        .input-text-container, .label-text-container {
+        .input-text-container,
+        .label-text-container {
             margin-bottom: 5px;
         }
 
@@ -49,103 +52,181 @@
             width: 20px;
             height: 20px;
         }
+
+        .error {
+            color: red;
+            font-size: 0.9rem;
+        }
+
+        .navigation-pill-list {
+            margin-bottom: 30px;
+        }
+
+        .navigation-pill {
+            padding: 10px 15px;
+            cursor: pointer;
+        }
+
+        .navigation-pill2 {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .title2,
+        .title3 {
+            font-size: 16px;
+        }
+
+        .favorite {
+            font-size: 20px;
+        }
     </style>
 </head>
+
 <body>
 
-<div class="container mt-5">
-    <div class="row mb-4">
-        <div class="col">
-            <div class="d-flex justify-content-between align-items-center">
-                <div class="favorite"><i class="fas fa-heart"></i> Favorite</div>
-                <div class="title h4">LetterSquared</div>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">LetterSquared</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/addform">Log a Movie</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">Movie List</a>
+                    </li>
+                </ul>
             </div>
         </div>
-    </div>
+    </nav>
 
-    <div class="row">
-        <div class="col">
-            <div class="navigation-pill-list d-flex">
-                <div class="navigation-pill p-2">
-                    <div class="title2">Home</div>
-                </div>
-                <div class="navigation-pill2 p-2 bg-primary text-white">
-                    <div class="title3">Log a Movie</div>
-                </div>
-                <div class="navigation-pill p-2">
-                    <div class="title2">Movie List</div>
-                </div>
+    <div class="container mt-5">
+        <h2>Add a Movie</h2>
+        <p>Share your thoughts about a movie:</p>
+
+        <form action="/addreview" method="POST" id="movieForm">
+            <div class="mb-3">
+                <label for="moviename" class="form-label">Movie Title</label>
+                <input type="text" class="form-control" id="moviename" name="moviename" placeholder="Enter movie title" required>
+                <div id="movienameError" class="error"></div>
             </div>
-        </div>
-    </div>
 
-    <form action="/addreview" method="POST">
-        <div class="mb-3">
-            <label for="moviename" class="form-label">Movie Title</label>
-            <input type="text" class="form-control" id="moviename" name="moviename" placeholder="Enter movie title" required>
-        </div>
+            <div class="mb-3">
+                <label for="review" class="form-label">Review</label>
+                <textarea class="form-control" id="review" name="review" rows="4" placeholder="Write your review here" required></textarea>
+                <div id="reviewError" class="error"></div>
+            </div>
 
-        <div class="mb-3">
-            <label for="review" class="form-label">Review</label>
-            <textarea class="form-control" id="review" name="review" rows="4" placeholder="Write your review here" required></textarea>
-        </div>
+            <div class="mb-3">
+                <label for="date_watched" class="form-label">Date Watched</label>
+                <input type="date" class="form-control" id="date_watched" name="date_watched" required>
+                <div id="dateError" class="error"></div>
+            </div>
 
-        <div class="mb-3">
-            <label for="date_watched" class="form-label">Date Watched</label>
-            <input type="date" class="form-control" id="date_watched" name="date_watched" required>
-        </div>
+            <div class="mb-3">
+                <label for="genre" class="form-label">Genre</label>
+                <select class="form-select" id="genre" name="genre" required>
+                    <option value="" disabled selected>Select a genre</option>
+                    {{#genres}}
+                        <option value="{{.}}">{{.}}</option>
+                    {{/genres}}
+                </select>
+                <small class="form-text text-muted">Select the movie genre</small>
+            </div>
 
-        <div class="mb-3">
-            <label class="form-label">Genre</label>
-            <div class="chip-group">
-                {{#genres}}
+            <div class="mb-3">
+                <label class="form-label">Rating</label>
+                <div class="chip-group">
                     <label class="chip">
-                        <input type="checkbox" name="genre" value="{{genre}}"> {{genre}}
+                        <input type="radio" name="rating" value="1"> ⭐
                     </label>
-                {{/genres}}
+                    <label class="chip">
+                        <input type="radio" name="rating" value="2"> ⭐⭐
+                    </label>
+                    <label class="chip">
+                        <input type="radio" name="rating" value="3"> ⭐⭐⭐
+                    </label>
+                    <label class="chip">
+                        <input type="radio" name="rating" value="4"> ⭐⭐⭐⭐
+                    </label>
+                    <label class="chip2">
+                        <input type="radio" name="rating" value="5"> ⭐⭐⭐⭐⭐
+                    </label>
+                </div>
+                <small class="form-text text-muted">Rate the movie</small>
             </div>
-            <small class="form-text text-muted">Select the movie genre</small>
-        </div>
 
-        <div class="mb-3">
-            <label class="form-label">Rating</label>
-            <div class="chip-group">
-                <label class="chip">
-                    <input type="radio" name="rating" value="1"> ⭐
-                </label>
-                <label class="chip">
-                    <input type="radio" name="rating" value="2"> ⭐⭐
-                </label>
-                <label class="chip">
-                    <input type="radio" name="rating" value="3"> ⭐⭐⭐
-                </label>
-                <label class="chip">
-                    <input type="radio" name="rating" value="4"> ⭐⭐⭐⭐
-                </label>
-                <label class="chip2">
-                    <input type="radio" name="rating" value="5"> ⭐⭐⭐⭐⭐
-                </label>
+            <div class="mb-3">
+                <label class="form-label">Add to Favorites</label>
+                <i class="favorite heart {{#favourite}}fas fa-heart{{/favourite}}{{^favourite}}far fa-heart{{/favourite}}"></i>
             </div>
-            <small class="form-text text-muted">Rate the movie</small>
+
+            <button type="submit" class="btn btn-primary">Add Movie</button>
+        </form>
+
+        <div class="container3">
+            <div class="title7">© 2024 LetterSquared. All Rights Reserved.</div>
         </div>
-
-        <div class="form-check mb-3">
-            <input type="checkbox" class="form-check-input" id="favourite" name="favourite">
-            <label class="form-check-label" for="favourite">Add to Favorites</label>
-        </div>
-
-        <button type="submit" class="btn btn-primary">Add Movie</button>
-    </form>
-
-    <div class="primary mt-5">
-        <div class="title6 h5">Add Movie</div>
     </div>
 
-    <div class="container3">
-        <div class="title7">© 2024 LetterSquared. All Rights Reserved.</div>
-    </div>
-</div>
+    <script>
+        document.getElementById('movieForm').addEventListener('submit', function(event) {
+            let valid = true;
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+            // Clear previous errors
+            document.getElementById('movienameError').innerText = '';
+            document.getElementById('reviewError').innerText = '';
+            document.getElementById('dateError').innerText = '';
+
+            // Movie Title Validation (must not be empty and length > 2)
+            const movieTitle = document.getElementById('moviename').value;
+            if (movieTitle.trim().length < 3) {
+                document.getElementById('movienameError').innerText = 'Movie title must be at least 3 characters long.';
+                valid = false;
+            }
+
+            // Review Validation (must not be empty and length > 5)
+            const review = document.getElementById('review').value;
+            if (review.trim().length < 6) {
+                document.getElementById('reviewError').innerText = 'Review must be at least 6 characters long.';
+                valid = false;
+            }
+
+            // Date Watched Validation (must be a valid date)
+            const dateWatched = document.getElementById('date_watched').value;
+            if (!dateWatched) {
+                document.getElementById('dateError').innerText = 'Please select a valid date.';
+                valid = false;
+            }
+
+            if (!valid) {
+                event.preventDefault(); // Prevent form submission if validation fails
+            }
+        });
+
+        // Handle the favorite heart icon click
+        document.querySelector('.favorite.heart').addEventListener('click', function() {
+            const heartIcon = this;
+
+            // Toggle the heart icon class on click
+            if (heartIcon.classList.contains('far')) {
+                heartIcon.classList.remove('far', 'fa-heart');
+                heartIcon.classList.add('fas', 'fa-heart');
+            } else {
+                heartIcon.classList.remove('fas', 'fa-heart');
+                heartIcon.classList.add('far', 'fa-heart');
+            }
+        });
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+
 </html>

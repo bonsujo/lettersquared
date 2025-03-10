@@ -1,16 +1,18 @@
 const express = require('express');
 const app = express();
 const mustacheExpress = require('mustache-express');
-const Model = require('./app.model.js')
+const bodyParser = require('body-parser');
+const Model = require('./app.model'); 
 
-Model.makeConnection();
+
+
 
 app.engine("mustache", mustacheExpress());
 app.set('view engine', 'mustache');
 app.set('views', __dirname + '/views');
+app.use(bodyParser.urlencoded({ extended: true }));
 
-
-// Show all movies and provide link to add a new movie
+// Show all reviews with filters for Rating and Genre
 app.get('/', async (req, res) => {
     const { rating, genre, search } = req.query;
     let reviews;
@@ -18,6 +20,7 @@ app.get('/', async (req, res) => {
     // Get the unique genres to show in the filter dropdown
     const genres = await Model.getGenres();
 
+    // Fetch filtered or all reviews
     if (rating || genre) {
         reviews = await Model.getFilteredReviews(rating, genre, search);
     } else {
@@ -28,12 +31,12 @@ app.get('/', async (req, res) => {
     const reviewsWithStars = reviews.map(review => {
         return {
             ...review,
-            stars: Array(review.rating).fill(1),  // Create an array with `rating` number of stars
-            favourite: review.favourite === 1  // Ensure `favourite` is a boolean
+            stars: Array(review.rating).fill(1),  
+            favourite: review.favourite === 1  
         };
     });
 
-    // Prepare data for rendering (handle 'selected' logic for rating and genre in backend)
+    
     const ratingSelected = {
         1: rating === '1' ? 'selected' : '',
         2: rating === '2' ? 'selected' : '',
@@ -42,24 +45,76 @@ app.get('/', async (req, res) => {
         5: rating === '5' ? 'selected' : ''
     };
 
-    // Pass the genres and selected genre to the template
+    // Map genres correctly if they are objects like { genre: 'Action' }
     const genreSelected = genres.map(g => ({
-        genre: g,
-        selected: genre === g ? 'selected' : ''
+        genre: g.genre || g,  // Adjust based on the structure of each genre
+        selected: genre === g.genre || genre === g ? 'selected' : ''
     }));
 
+    // Pass the data to the Mustache template
     res.render('main_page', { reviews: reviewsWithStars, genres: genreSelected, search, ratingSelected });
+});
+
+// Toggle favorite status
+app.get('/togglefavorite/:id', async (req, res) => {
+    await Model.toggleFavorite(req.params.id);
+    res.redirect('/');
 });
 
 // Show form to add a new review
 app.get('/addform', (req, res) => {
-    res.render('add_movie');
+    const genres = ['Action', 'Comedy', 'Drama', 'Horror', 'Romance']; // Define the genres array
+    res.render('add_form', { genres: genres }); // Pass genres to the template
 });
- 
+
 // Handle adding a new review
 app.post('/addreview', async (req, res) => {
+    const { moviename, review, date_watched, rating, genre } = req.body;
+
+    let errors = [];
+
+    // Validate Movie Title (must be at least 3 characters long)
+    if (!moviename || moviename.trim().length < 3) {
+        errors.push('Movie title must be at least 3 characters long.');
+    }
+
+    // Validate Review (must be at least 6 characters long)
+    if (!review || review.trim().length < 6) {
+        errors.push('Review must be at least 6 characters long.');
+    }
+
+    // Validate Date Watched
+    if (!date_watched) {
+        errors.push('Please select a valid date.');
+    }
+
+    // Validate Rating (must be a valid rating)
+    if (!rating || !['1', '2', '3', '4', '5'].includes(rating)) {
+        errors.push('Please select a valid rating.');
+    }
+
+    // If there are errors, send them back to the user
+    if (errors.length > 0) {
+        return res.status(400).json({ errors });
+    }
+
+    // Save to the database (implement your DB logic here, e.g., Model.addReview)
+    await Model.addReview({ moviename, review, date_watched, rating, genre });
+
+    // Redirect to the movie list page after adding the review
+    res.redirect('/');
+});
+
+// Show form to update a review
+app.get('/updateform/:id', async (req, res) => {
+    const review = await Model.getReviewById(req.params.id);
+    res.render('update_form', { review });
+});
+
+// Handle updating a review
+app.post('/updatereview/:id', async (req, res) => {
     const { moviename, genre, review, date_watched, rating, favourite } = req.body;
-    const newReview = { 
+    const updatedReview = { 
         moviename, 
         genre, 
         review, 
@@ -67,22 +122,25 @@ app.post('/addreview', async (req, res) => {
         rating, 
         favourite: favourite === 'on' ? 1 : 0  // Convert `favourite` to 1 or 0
     };
-    await Model.addReview(newReview);
+    await Model.updateReview(updatedReview, req.params.id);
     res.redirect('/');
 });
-// Handle deleting a movie
-app.get('/delete-movie/:id', async function(req, res) {
-// Delete the movie with the given ID
-await Model.deleteMovie(req.params.id); 
 
-// Get updated list of movies
-const movies = await Model.getAllMovies(); 
-
-// Render the page with the updated movies list
-res.render('movie_page', { movies: movies });
+// Handle deleting a review
+app.get('/deletereview/:id', async (req, res) => {
+    await Model.deleteReview(req.params.id);
+    res.redirect('/');
 });
 
+// Delete all reviews
+app.post('/deleteall', async (req, res) => {
+    await Model.deleteAllReviews();
+    res.redirect('/');
+});
+
+console.log('Database Path:', __dirname + '/reviews.db');
+
 // Start the server
-app.listen(3000, function() { 
-    console.log("Server listening on port 3000..."); 
+app.listen(3000, () => {
+  console.log("Server is running on port 3000...");
 });
