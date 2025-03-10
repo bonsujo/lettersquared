@@ -2,12 +2,23 @@ const sqlite3 = require("sqlite3").verbose();
 const db = new sqlite3.Database("movies.db")
 
 db.serialize(function(){
-    db.run("DROP TABLE IF EXISTS Movies");
-    db.run("CREATE TABLE Movies (moviename TEXT, genre TEXT, review TEXT, date TEXT, rating INTEGER, favourite INTEGER )");
+    db.run("DROP TABLE IF EXISTS Reviews");
+  db.run(`
+    CREATE TABLE Reviews (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,  
+    moviename TEXT NOT NULL,               
+    genre TEXT NOT NULL,                   
+    review TEXT,                          
+    date_watched DATE NOT NULL,             
+    user_rating REAL NOT NULL,                
+    favourite INTEGER NOT NULL        
+    )
+  `);
 
-    db.run("INSERT INTO Movies VALUES (?,?,?,?,?,?)", ['John Wick','Action','Why did they kill the dog!', 'November 29, 2021','5', '1' ]);
-    db.run("INSERT INTO Movies VALUES (?,?,?,?,?,?)", ['Maze Runner','Action','Dylan O Brien is a heartthrob <3', 'July 24, 2014','4', '0' ]);
-    db.run("INSERT INTO Movies VALUES (?,?,?,?,?,?)", ['Memories of a Murder','Thriller','I am rattled, amazing movie', 'December 15, 2013','5', '1' ]);
-    db.run("INSERT INTO Movies VALUES (?,?,?,?,?,?)", ['Companion','Action','Great twist, did not know she was a robot', 'February 22, 2025','4', '0' ]);
+    // Initial Data
+  db.run("INSERT INTO Reviews (movieTitle, reviewerName, rating, reviewText, reviewDate) VALUES (?,?,?,?,?)", 
+  ['Inception', 'John Doe', 5, 'Amazing movie!', '2025-02-24']);
+  db.run("INSERT INTO Reviews (movieTitle, reviewerName, rating, reviewText, reviewDate) VALUES (?,?,?,?,?)", 
+  ['Titanic', 'Jane Smith', 4, 'A classic!', '2025-02-23']);
 
 })
