@@ -340,3 +340,25 @@
           {{/movies}}
         </tbody>
       </table>
+
+      <p><a href="/add_movie">Add Movie</a></p>
+      {{#addMovie}}
+      <form action="/addmovie" >
+        <label for="moviename">Movie Title:</label>
+        <input type="text" name="moviename" required><br />
+
+        <label for="genre">Genre:</label>
+        <input type="text" name="genre" required><br />
+
+        <label for="review">Review:</label>
+        <textarea name="review" required></textarea><br />
+
+        <label for="rating">Rating:</label>
+        <input type="number" name="rating" min="1" max="5" required><br />
+
+        <label for="favourite">Favorite:</label>
+        <input type="checkbox" name="favourite"><br />
+
+        <input type="submit" value="Add Movie">
+      </form>
+      {{/addMovie}}

@@ -16,6 +16,11 @@ app.get('/', async function(req, res) {
     res.render('movie_page', { movies: movies });
   });
 
+  // Display the form for adding a new movie
+app.get('/add_movie', async function(req, res) {
+    res.render('movie_page', { addMovie: true }); // Show form to add a movie
+});
+
 //Handle adding a new movie (form submission)
 app.get('/addmovie', async function(req, res) {
     // Insert the movie into the database using form data
