@@ -115,18 +115,21 @@ app.get('/updateform/:id', async (req, res) => {
     res.render('update_form', { review });
 });
 
-// Handle updating a review
+// Update review by id
 app.post('/updatereview/:id', async (req, res) => {
-    const { moviename, genre, review, date_watched, rating, favourite } = req.body;
+    const { review, rating, favourite } = req.body;
+
+    // Construct the updatedReview object with only editable fields
     const updatedReview = { 
-        moviename, 
-        genre, 
         review, 
-        date_watched, 
         rating, 
         favourite: favourite === 'on' ? 1 : 0  // Convert `favourite` to 1 or 0
     };
+
+    // Update the review in the database, using the ID to find the correct review
     await Model.updateReview(updatedReview, req.params.id);
+
+    // Redirect to the movie list page after updating the review
     res.redirect('/');
 });
 

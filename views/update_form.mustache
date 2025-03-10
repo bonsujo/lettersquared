@@ -4,82 +4,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Edit Movie - LetterSquared</title>
+    <title>Log a Movie - LetterSquared</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <style>
-        /* Custom styles for chips, favorites, etc. */
+        .favorite {
+            font-size: 20px;
+            cursor: pointer;
+        }
+
         .heart {
             width: 24px;
             height: 24px;
             margin-top: 10px;
             cursor: pointer;
-        }
-
-        .chip-group {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-
-        .chip,
-        .chip2 {
-            padding: 8px 15px;
-            background-color: #f1f1f1;
-            border-radius: 15px;
-            cursor: pointer;
-        }
-
-        .chip2 {
-            background-color: #e1e1e1;
-        }
-
-        .primary {
-            margin-top: 30px;
-            text-align: center;
-        }
-
-        .container3 {
-            text-align: center;
-            margin-top: 40px;
-        }
-
-        .input-text-container,
-        .label-text-container {
-            margin-bottom: 5px;
-        }
-
-        .state-layer2 img {
-            width: 20px;
-            height: 20px;
-        }
-
-        .error {
-            color: red;
-            font-size: 0.9rem;
-        }
-
-        .navigation-pill-list {
-            margin-bottom: 30px;
-        }
-
-        .navigation-pill {
-            padding: 10px 15px;
-            cursor: pointer;
-        }
-
-        .navigation-pill2 {
-            background-color: #007bff;
-            color: white;
-        }
-
-        .title2,
-        .title3 {
-            font-size: 16px;
-        }
-
-        .favorite {
-            font-size: 20px;
         }
     </style>
 </head>
@@ -98,7 +36,7 @@
                         <a class="nav-link" href="/">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link active" href="/editform">Edit Movie</a>
+                        <a class="nav-link active" href="/addform">Log a Movie</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="/">Movie List</a>
@@ -109,126 +47,63 @@
     </nav>
 
     <div class="container mt-5">
-        <h2>Edit Movie</h2>
-        <p>Update your thoughts about a movie:</p>
+        <h2>Update Movie Review</h2>
+        <p>Share your thoughts about the movie:</p>
 
-        <form action="/updatereview/{{movieId}}" method="POST" id="movieForm">
-            <div class="mb-3">
-                <label for="moviename" class="form-label">Movie Title</label>
-                <input type="text" class="form-control" id="moviename" name="moviename" value="{{movie.moviename}}" placeholder="Enter movie title" required>
-                <div id="movienameError" class="error"></div>
-            </div>
+        <form action="/updateReview" method="POST" id="movieForm">
+            <!-- Movie Title (hidden for simplicity) -->
+            <input type="hidden" name="moviename" value="{{moviename}}">
 
             <div class="mb-3">
                 <label for="review" class="form-label">Review</label>
-                <textarea class="form-control" id="review" name="review" rows="4" placeholder="Write your review here" required>{{movie.review}}</textarea>
-                <div id="reviewError" class="error"></div>
-            </div>
-
-            <div class="mb-3">
-                <label for="date_watched" class="form-label">Date Watched</label>
-                <input type="date" class="form-control" id="date_watched" name="date_watched" value="{{movie.date_watched}}" required>
-                <div id="dateError" class="error"></div>
-            </div>
-
-            <div class="mb-3">
-                <label for="genre" class="form-label">Genre</label>
-                <select class="form-select" id="genre" name="genre" required>
-                    <option value="" disabled>Select a genre</option>
-                    {{#genres}}
-                        <option value="{{.}}" {{#if (eq . movie.genre)}}selected{{/if}}>{{.}}</option>
-                    {{/genres}}
-                </select>
-                <small class="form-text text-muted">Select the movie genre</small>
-            </div>
-
-            <div class="mb-3">
-                <label class="form-label">Rating</label>
-                <div class="chip-group">
-                    <label class="chip">
-                        <input type="radio" name="rating" value="1" {{#if (eq movie.rating 1)}}checked{{/if}}> ⭐
-                    </label>
-                    <label class="chip">
-                        <input type="radio" name="rating" value="2" {{#if (eq movie.rating 2)}}checked{{/if}}> ⭐⭐
-                    </label>
-                    <label class="chip">
-                        <input type="radio" name="rating" value="3" {{#if (eq movie.rating 3)}}checked{{/if}}> ⭐⭐⭐
-                    </label>
-                    <label class="chip">
-                        <input type="radio" name="rating" value="4" {{#if (eq movie.rating 4)}}checked{{/if}}> ⭐⭐⭐⭐
-                    </label>
-                    <label class="chip2">
-                        <input type="radio" name="rating" value="5" {{#if (eq movie.rating 5)}}checked{{/if}}> ⭐⭐⭐⭐⭐
-                    </label>
-                </div>
-                <small class="form-text text-muted">Rate the movie</small>
+                <textarea class="form-control" id="review" name="review" rows="4" placeholder="Write your review here">{{review}}</textarea>
             </div>
 
             <div class="mb-3">
                 <label class="form-label">Add to Favorites</label>
                 <!-- Heart icon for toggle -->
-                <i class="favorite heart {{#favourite}}fas fa-heart{{/favourite}}{{^favourite}}far fa-heart{{/favourite}}" id="heartIcon"></i>
+                <i class="favorite heart" id="heartIcon"></i>
                 <!-- Hidden input to track favorite state -->
-                <input type="hidden" name="favourite" id="favourite" value="{{movie.favourite}}">
+                <input type="hidden" name="favourite" id="favourite" value="{{favourite}}">
             </div>
 
-            <button type="submit" class="btn btn-primary">Update Movie</button>
+            <button type="submit" class="btn btn-primary">Update Review</button>
         </form>
 
-        <div class="container3">
+        <div class="container3 mt-3">
             <div class="title7">© 2024 LetterSquared. All Rights Reserved.</div>
         </div>
     </div>
 
     <script>
-        document.getElementById('movieForm').addEventListener('submit', function(event) {
-            let valid = true;
+        window.onload = function () {
+            // Get the favourite state from the hidden input field
+            const isFavourite = {{favourite}}; // Assuming favourite is passed directly
+            const heartIcon = document.getElementById('heartIcon');
+            const favouriteInput = document.getElementById('favourite');
 
-            // Clear previous errors
-            document.getElementById('movienameError').innerText = '';
-            document.getElementById('reviewError').innerText = '';
-            document.getElementById('dateError').innerText = '';
-
-            // Movie Title Validation (must not be empty and length > 2)
-            const movieTitle = document.getElementById('moviename').value;
-            if (movieTitle.trim().length < 3) {
-                document.getElementById('movienameError').innerText = 'Movie title must be at least 3 characters long.';
-                valid = false;
-            }
-
-            // Review Validation (must not be empty and length > 5)
-            const review = document.getElementById('review').value;
-            if (review.trim().length < 6) {
-                document.getElementById('reviewError').innerText = 'Review must be at least 6 characters long.';
-                valid = false;
-            }
-
-            // Date Watched Validation (must be a valid date)
-            const dateWatched = document.getElementById('date_watched').value;
-            if (!dateWatched) {
-                document.getElementById('dateError').innerText = 'Please select a valid date.';
-                valid = false;
-            }
-
-            if (!valid) {
-                event.preventDefault(); // Prevent form submission if validation fails
-            }
-        });
-
-        document.querySelector('.favorite.heart').addEventListener('click', function() {
-            const heartIcon = this;
-            const favouriteInput = document.getElementById('favourite'); // The hidden input
-
-            if (heartIcon.classList.contains('far')) {
-                heartIcon.classList.remove('far', 'fa-heart');
-                heartIcon.classList.add('fas', 'fa-heart');
-                favouriteInput.value = "1"; // Mark as favourite
+            // Set the correct icon based on whether the review is a favourite or not
+            if (isFavourite) {
+                heartIcon.classList.add('fas', 'fa-heart'); // Filled heart
+                heartIcon.classList.remove('far'); // Remove empty heart class
             } else {
-                heartIcon.classList.remove('fas', 'fa-heart');
-                heartIcon.classList.add('far', 'fa-heart');
-                favouriteInput.value = "0"; // Unmark as favourite
+                heartIcon.classList.add('far', 'fa-heart'); // Empty heart
+                heartIcon.classList.remove('fas'); // Remove filled heart class
             }
-        });
+
+            // Toggle favourite state when clicking on the heart
+            heartIcon.addEventListener('click', function () {
+                if (heartIcon.classList.contains('far')) {
+                    heartIcon.classList.remove('far', 'fa-heart');
+                    heartIcon.classList.add('fas', 'fa-heart');
+                    favouriteInput.value = "1"; // Mark as favourite
+                } else {
+                    heartIcon.classList.remove('fas', 'fa-heart');
+                    heartIcon.classList.add('far', 'fa-heart');
+                    favouriteInput.value = "0"; // Unmark as favourite
+                }
+            });
+        };
     </script>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>

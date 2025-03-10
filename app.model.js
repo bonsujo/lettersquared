@@ -69,8 +69,9 @@ async function addReview(review) {
 // Update an existing review
 async function updateReview(review, id) {
   const db = await makeConnection(); 
-  await db.run("UPDATE Reviews SET moviename = ?, genre = ?, review = ?, date_watched = ?, rating = ?, favourite = ? WHERE id = ?",
-    [review.moviename, review.genre, review.review, review.date_watched, review.rating, review.favourite, id]);
+  
+  await db.run("UPDATE Reviews SET review = ?, rating = ?, favourite = ? WHERE id = ?",
+    [review.review, review.rating, review.favourite, id]);
 }
 
 // Delete a review by id
