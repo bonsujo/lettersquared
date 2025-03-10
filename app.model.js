@@ -16,4 +16,14 @@ async function getAllMovies() {
     return results;
 }
 
-module.exports = { makeConnection};
+// Insert a new movie into the database
+async function addMovie(moviename, genre, review, date, rating, favourite) {
+    await db.run("INSERT INTO Movies (moviename, genre, review, date, rating, favourite) VALUES (?, ?, ?, ?, ?, ?)", [moviename, genre, review, date, rating, favourite]);
+}
+
+ // Delete a movie by ID
+async function deleteMovie(id) {
+    await db.run("DELETE FROM Movies WHERE rowid = ?", [id]);
+  }
+
+module.exports = { makeConnection, getAllMovies, deleteMovie, addMovie};

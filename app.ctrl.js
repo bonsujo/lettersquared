@@ -16,10 +16,20 @@ app.get('/', async function(req, res) {
     res.render('movie_page', { movies: movies });
   });
 
-
+//Handle adding a new movie (form submission)
+app.get('/addmovie', async function(req, res) {
+    // Insert the movie into the database using form data
+    await Model.addMovie(req.query); 
+  
+    // Get updated list of movies
+    const movies = await Model.getAllMovies(); 
+  
+    // Render the page with the updated movies list
+    res.render('movie_page', { movies: movies });
+  });
 
 // Handle deleting a movie
-app.get('/delete/:id', async function(req, res) {
+app.get('/delete-movie/:id', async function(req, res) {
 // Delete the movie with the given ID
 await Model.deleteMovie(req.params.id); 
 
