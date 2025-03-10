@@ -17,6 +17,19 @@ app.get('/', async function(req, res) {
   });
 
 
+
+// Handle deleting a movie
+app.get('/delete/:id', async function(req, res) {
+// Delete the movie with the given ID
+await Model.deleteMovie(req.params.id); 
+
+// Get updated list of movies
+const movies = await Model.getAllMovies(); 
+
+// Render the page with the updated movies list
+res.render('movie_page', { movies: movies });
+});
+
 // Start the server
 app.listen(3000, function() { 
     console.log("Server listening on port 3000..."); 
