@@ -15,3 +15,5 @@ async function getAllMovies() {
     const results = await db.all("SELECT rowid, * FROM Movies");
     return results;
 }
+
+module.exports = { makeConnection};
