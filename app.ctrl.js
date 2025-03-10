@@ -67,9 +67,9 @@ app.get('/addform', (req, res) => {
     res.render('add_form', { genres: genres }); // Pass genres to the template
 });
 
-// Handle adding a new review
+// add review
 app.post('/addreview', async (req, res) => {
-    const { moviename, review, date_watched, rating, genre } = req.body;
+    const { moviename, review, date_watched, rating, genre, favourite } = req.body;
 
     let errors = [];
 
@@ -98,12 +98,16 @@ app.post('/addreview', async (req, res) => {
         return res.status(400).json({ errors });
     }
 
-    // Save to the database (implement your DB logic here, e.g., Model.addReview)
-    await Model.addReview({ moviename, review, date_watched, rating, genre });
+    // Capture the `favourite` field, default to `0` if not provided
+    const favouriteValue = favourite === '1' ? 1 : 0;
+
+    // Save to the database
+    await Model.addReview({ moviename, review, date_watched, rating, genre, favourite: favouriteValue });
 
     // Redirect to the movie list page after adding the review
     res.redirect('/');
 });
+
 
 // Show form to update a review
 app.get('/updateform/:id', async (req, res) => {

@@ -164,9 +164,13 @@
             </div>
 
             <div class="mb-3">
-                <label class="form-label">Add to Favorites</label>
-                <i class="favorite heart {{#favourite}}fas fa-heart{{/favourite}}{{^favourite}}far fa-heart{{/favourite}}"></i>
-            </div>
+              <label class="form-label">Add to Favorites</label>
+              <!-- Heart icon for toggle -->
+              <i class="favorite heart {{#favourite}}fas fa-heart{{/favourite}}{{^favourite}}far fa-heart{{/favourite}}" id="heartIcon"></i>
+              <!-- Hidden input to track favorite state -->
+              <input type="hidden" name="favourite" id="favourite" value="0">
+          </div>
+
 
             <button type="submit" class="btn btn-primary">Add Movie</button>
         </form>
@@ -211,19 +215,20 @@
             }
         });
 
-        // Handle the favorite heart icon click
-        document.querySelector('.favorite.heart').addEventListener('click', function() {
-            const heartIcon = this;
+       document.querySelector('.favorite.heart').addEventListener('click', function() {
+          const heartIcon = this;
+          const favouriteInput = document.getElementById('favourite'); // The hidden input
 
-            // Toggle the heart icon class on click
-            if (heartIcon.classList.contains('far')) {
+          if (heartIcon.classList.contains('far')) {
                 heartIcon.classList.remove('far', 'fa-heart');
                 heartIcon.classList.add('fas', 'fa-heart');
-            } else {
+                favouriteInput.value = "1"; // Mark as favourite
+          } else {
                 heartIcon.classList.remove('fas', 'fa-heart');
                 heartIcon.classList.add('far', 'fa-heart');
-            }
-        });
+                favouriteInput.value = "0"; // Unmark as favourite
+          }
+      });
     </script>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
