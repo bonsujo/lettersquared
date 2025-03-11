@@ -34,13 +34,30 @@
     width: 100%;
     padding: 10px;
   }
-  .container {
-    margin-top: 20px;
-    margin-bottom: 20px;
-    padding: 15px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
+  body {
+  position: relative;
+  min-height: 100vh; /* Ensure full viewport height */
   }
+  .container {
+    background-color: rgba(255, 255, 255); 
+    border-radius: 8px;
+    padding: 20px;
+  }
+  body::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: url('/assets/images/bg_image.jpg');
+  background-size: cover;
+  background-position: center;
+  filter: blur(8px); /* Adjust the blur level */
+  z-index: -1; /* Ensure the background is behind the content */
+}
+
+
 
   .navbar {
     margin-bottom: 20px;
@@ -80,9 +97,6 @@
 
     <!-- Filter Form -->
 <form action="/" method="GET" class="row g-3 mb-4 justify-content-center">
-  <div class="col-md-3 col-sm-12">
-    <input type="text" class="form-control" name="search" placeholder="Search reviews" value="{{search}}">
-  </div>
   <div class="col-md-2 col-sm-12">
     <select name="rating" class="form-control">
       <option value="">Select Rating</option>
@@ -99,6 +113,14 @@
       {{#genres}}
         <option value="{{genre}}" {{selected}}>{{genre}}</option>
       {{/genres}}
+    </select>
+  </div>
+
+  <div class="col-md-2 col-sm-12">
+    <select name="sort" class="form-control">
+      <option value="">Sort By</option>
+      <option value="rating" {{#sort}}selected{{/sort}}>Rating</option>
+      <option value="date" {{#sort}}selected{{/sort}}>Date</option>
     </select>
   </div>
   <div class="col-md-2 col-sm-12">
@@ -150,6 +172,12 @@
           {{/reviews}}
         </tbody>
       </table>
+            <!-- Delete All Reviews Button -->
+      <div class="text-center mt-4">
+          <form action="/deleteall" method="POST">
+              <button type="submit" class="btn btn-danger">Delete All Reviews</button>
+          </form>
+      </div>
     </div>
   </div>
 

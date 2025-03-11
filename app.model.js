@@ -27,7 +27,7 @@ async function getGenres() {
 }
 
 // Get filtered reviews
-async function getFilteredReviews(rating, genre) {
+async function getFilteredReviews(rating, genre, sort) {
   const db = await makeConnection();
   let query = 'SELECT * FROM Reviews WHERE 1=1';
   const params = [];
@@ -41,6 +41,13 @@ async function getFilteredReviews(rating, genre) {
     params.push(genre);
   }
 
+  // Sorting by rating or date
+  if (sort === 'rating') {
+    query += ' ORDER BY rating DESC';  // Sort by rating
+  } else if (sort === 'date') {
+    query += ' ORDER BY date_watched DESC';  // Sort by date
+  }
+
   const rows = await db.all(query, params);
   return rows;
 }
@@ -51,6 +58,21 @@ async function toggleFavorite(id) {
   const newStatus = review.favourite ? 0 : 1;
   await db.run('UPDATE Reviews SET favourite = ? WHERE id = ?', [newStatus, id]);
 }
+
+// Get all reviews sorted by rating
+async function getAllReviewsByRating() {
+  const db = await makeConnection(); 
+  const results = await db.all("SELECT rowid, * FROM Reviews ORDER BY rating DESC");
+  return results;
+}
+
+// Get all reviews sorted by date (newest first)
+async function getAllReviewsByDate() {
+  const db = await makeConnection(); 
+  const results = await db.all("SELECT rowid, * FROM Reviews ORDER BY date_watched DESC");
+  return results;
+}
+
 
 // Get a single review by id
 async function getReviewById(id) {
@@ -86,4 +108,4 @@ async function deleteAllReviews() {
   await db.run('DELETE FROM Reviews');
 }
 
-module.exports = { getAllReviews, getReviewById, addReview, updateReview, deleteReview, getFilteredReviews, toggleFavorite, deleteAllReviews, getGenres };
+module.exports = { getAllReviews, getReviewById, addReview, updateReview, deleteReview, getFilteredReviews, toggleFavorite, deleteAllReviews, getGenres, getAllReviewsByRating, getAllReviewsByDate };

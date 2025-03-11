@@ -5,7 +5,7 @@ const bodyParser = require('body-parser');
 const Model = require('./app.model'); 
 
 
-
+app.use(express.static('public'));
 
 app.engine("mustache", mustacheExpress());
 app.set('view engine', 'mustache');
@@ -14,18 +14,25 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 // Show all reviews with filters for Rating and Genre
 app.get('/', async (req, res) => {
-    const { rating, genre, search } = req.query;
+    const { rating, genre, sort } = req.query;
     let reviews;
 
     // Get the unique genres to show in the filter dropdown
     const genres = await Model.getGenres();
 
-    // Fetch filtered or all reviews
-    if (rating || genre) {
-        reviews = await Model.getFilteredReviews(rating, genre, search);
+    // Fetch reviews with filters
+  if (rating || genre || sort) {
+    reviews = await Model.getFilteredReviews(rating, genre, sort);
+  } else {
+    // Use the sorting functions based on the selected sort option
+    if (sort === 'rating') {
+      reviews = await Model.getAllReviewsByRating();
+    } else if (sort === 'date') {
+      reviews = await Model.getAllReviewsByDate();
     } else {
-        reviews = await Model.getAllReviews();
+      reviews = await Model.getAllReviews();  // Default to no sorting
     }
+  }
 
     // Modify the reviews data to include stars array and ensure `favourite` is a boolean
     const reviewsWithStars = reviews.map(review => {
@@ -53,7 +60,7 @@ app.get('/', async (req, res) => {
     }));
 
     // Pass the data to the Mustache template
-    res.render('main_page', { reviews: reviewsWithStars, genres: genreSelected, search, ratingSelected });
+    res.render('main_page', { reviews: reviewsWithStars, genres: genreSelected, ratingSelected, sort });
 });
 
 // Toggle favorite status
