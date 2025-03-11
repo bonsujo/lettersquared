@@ -4,19 +4,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Log a Movie - LetterSquared</title>
+    <title>Update Review - LetterSquared</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <style>
-        .favorite {
-            font-size: 20px;
-            cursor: pointer;
-        }
-
         .heart {
             width: 24px;
             height: 24px;
             margin-top: 10px;
+            cursor: pointer;
+        }
+
+        .container3 {
+            text-align: center;
+            margin-top: 40px;
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .error {
+            color: red;
+            font-size: 0.9rem;
+        }
+
+        .favorite {
+            font-size: 20px;
             cursor: pointer;
         }
     </style>
@@ -47,63 +59,92 @@
     </nav>
 
     <div class="container mt-5">
-        <h2>Update Movie Review</h2>
-        <p>Share your thoughts about the movie:</p>
+        <h2 class="text-center">Update Your Review</h2>
+        <p class="text-center">Edit your thoughts about the movie:</p>
 
-        <form action="/updateReview" method="POST" id="movieForm">
-            <!-- Movie Title (hidden for simplicity) -->
-            <input type="hidden" name="moviename" value="{{moviename}}">
-
-            <div class="mb-3">
-                <label for="review" class="form-label">Review</label>
-                <textarea class="form-control" id="review" name="review" rows="4" placeholder="Write your review here">{{review}}</textarea>
+        <form id="updateReviewForm" action="/updatereview/{{review.id}}" method="POST" class="mt-4">
+            <div class="row mb-3">
+                <div class="col-md-12">
+                    <label for="review" class="form-label">Review</label>
+                    <textarea id="review" name="review" class="form-control" rows="4">{{review.review}}</textarea>
+                    <div id="reviewError" class="error"></div>
+                </div>
             </div>
 
-            <div class="mb-3">
-                <label class="form-label">Add to Favorites</label>
-                <!-- Heart icon for toggle -->
-                <i class="favorite heart" id="heartIcon"></i>
-                <!-- Hidden input to track favorite state -->
-                <input type="hidden" name="favourite" id="favourite" value="{{favourite}}">
+            <div class="row mb-3">
+                <div class="col-md-4">
+                    <label for="rating" class="form-label">Rating</label>
+                    <select id="rating" name="rating" class="form-control">
+                        <option value="">Select Rating</option>
+                        <option value="1" {{ratingSelected.1}}>1 Star</option>
+                        <option value="2" {{ratingSelected.2}}>2 Stars</option>
+                        <option value="3" {{ratingSelected.3}}>3 Stars</option>
+                        <option value="4" {{ratingSelected.4}}>4 Stars</option>
+                        <option value="5" {{ratingSelected.5}}>5 Stars</option>
+                    </select>
+                </div>
+
+                <div class="col-md-4 d-flex align-items-center">
+                    <label class="form-label me-2">Favourite</label>
+                    <input id="favourite" type="hidden" name="favourite" value="1" {{#favourite}}checked{{/favourite}}>
+                    <i id="heartIcon" class="favorite far fa-heart ms-2"></i>
+                </div>
             </div>
 
-            <button type="submit" class="btn btn-primary">Update Review</button>
+            <div class="text-center">
+                <button type="submit" class="btn btn-primary">Update Review</button>
+            </div>
         </form>
 
-        <div class="container3 mt-3">
-            <div class="title7">© 2024 LetterSquared. All Rights Reserved.</div>
+        <div class="container3">
+            <div>© 2024 LetterSquared. All Rights Reserved.</div>
         </div>
     </div>
 
     <script>
-        window.onload = function () {
-            // Get the favourite state from the hidden input field
-            const isFavourite = {{favourite}}; // Assuming favourite is passed directly
-            const heartIcon = document.getElementById('heartIcon');
-            const favouriteInput = document.getElementById('favourite');
+        document.addEventListener("DOMContentLoaded", function () {
+            const form = document.getElementById("updateReviewForm");
+            const reviewInput = document.getElementById("review");
+            const reviewError = document.getElementById("reviewError");
+            const heartIcon = document.getElementById("heartIcon");
+            const favouriteInput = document.getElementById("favourite");
 
-            // Set the correct icon based on whether the review is a favourite or not
-            if (isFavourite) {
-                heartIcon.classList.add('fas', 'fa-heart'); // Filled heart
-                heartIcon.classList.remove('far'); // Remove empty heart class
-            } else {
-                heartIcon.classList.add('far', 'fa-heart'); // Empty heart
-                heartIcon.classList.remove('fas'); // Remove filled heart class
+            if (form) {
+                form.addEventListener("submit", function (event) {
+                    let valid = true;
+                    reviewError.innerText = "";
+
+                    if (reviewInput.value.trim().length < 6) {
+                        reviewError.innerText = "Review must be at least 6 characters long.";
+                        valid = false;
+                    }
+
+                    if (!valid) {
+                        event.preventDefault();
+                    }
+                });
             }
 
-            // Toggle favourite state when clicking on the heart
-            heartIcon.addEventListener('click', function () {
-                if (heartIcon.classList.contains('far')) {
-                    heartIcon.classList.remove('far', 'fa-heart');
-                    heartIcon.classList.add('fas', 'fa-heart');
-                    favouriteInput.value = "1"; // Mark as favourite
-                } else {
-                    heartIcon.classList.remove('fas', 'fa-heart');
-                    heartIcon.classList.add('far', 'fa-heart');
-                    favouriteInput.value = "0"; // Unmark as favourite
+            if (heartIcon) {
+                heartIcon.addEventListener("click", function () {
+                    if (heartIcon.classList.contains("far")) {
+                        heartIcon.classList.remove("far", "fa-heart");
+                        heartIcon.classList.add("fas", "fa-heart");
+                        favouriteInput.checked = true;
+                    } else {
+                        heartIcon.classList.remove("fas", "fa-heart");
+                        heartIcon.classList.add("far", "fa-heart");
+                        favouriteInput.checked = false;
+                    }
+                });
+
+                // Set the initial state of the heart icon based on the checkbox
+                if (favouriteInput.checked) {
+                    heartIcon.classList.remove("far", "fa-heart");
+                    heartIcon.classList.add("fas", "fa-heart");
                 }
-            });
-        };
+            }
+        });
     </script>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>

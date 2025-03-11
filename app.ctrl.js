@@ -112,26 +112,42 @@ app.post('/addreview', async (req, res) => {
 // Show form to update a review
 app.get('/updateform/:id', async (req, res) => {
     const review = await Model.getReviewById(req.params.id);
+    console.log('Fetched Review:', review); // Debugging statement
     res.render('update_form', { review });
 });
 
 // Update review by id
 app.post('/updatereview/:id', async (req, res) => {
-    const { review, rating, favourite } = req.body;
+    let { review, rating, favourite } = req.body;
 
-    // Construct the updatedReview object with only editable fields
+    // Ensure review is a string (in case it's an object)
+    review = String(review);
+
+    // Prepare the selected attributes for the rating dropdown options
+    const ratingSelected = {
+        '1': rating === '1' ? 'selected' : '',
+        '2': rating === '2' ? 'selected' : '',
+        '3': rating === '3' ? 'selected' : '',
+        '4': rating === '4' ? 'selected' : '',
+        '5': rating === '5' ? 'selected' : '',
+    };
+
+    // Update the review object
     const updatedReview = { 
         review, 
         rating, 
-        favourite: favourite === 'on' ? 1 : 0  // Convert `favourite` to 1 or 0
+        favourite: favourite === '1' ? 1 : 0
     };
 
-    // Update the review in the database, using the ID to find the correct review
+    // Update the review in the database
     await Model.updateReview(updatedReview, req.params.id);
 
-    // Redirect to the movie list page after updating the review
+    // Redirect to the home page after successful update
     res.redirect('/');
 });
+
+
+
 
 // Handle deleting a review
 app.get('/deletereview/:id', async (req, res) => {
