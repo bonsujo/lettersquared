@@ -38,20 +38,16 @@ app.get('/', async (req, res) => {
     const reviewsWithStars = reviews.map(review => {
         return {
             ...review,
-            fullStars: Array(review.rating).fill(1), // Filled stars (★)
-            emptyStars: Array(5 - review.rating).fill(1), // Empty stars (☆)
             favourite: review.favourite === 1,
+            isRating1: review.rating === 1,
+            isRating2: review.rating === 2,
+            isRating3: review.rating === 3,
+            isRating4: review.rating === 4,
+            isRating5: review.rating === 5,
         };
     });
 
-    
-    const ratingSelected = {
-        1: rating === '1' ? 'selected' : '',
-        2: rating === '2' ? 'selected' : '',
-        3: rating === '3' ? 'selected' : '',
-        4: rating === '4' ? 'selected' : '',
-        5: rating === '5' ? 'selected' : ''
-    };
+
 
     // Map genres correctly if they are objects like { genre: 'Action' }
     const genreSelected = genres.map(g => ({
@@ -60,7 +56,7 @@ app.get('/', async (req, res) => {
     }));
 
     // Pass the data to the Mustache template
-    res.render('main_page', { reviews: reviewsWithStars, genres: genreSelected, ratingSelected, sort });
+    res.render('main_page', { reviews: reviewsWithStars, genres: genreSelected, sort });
 });
 
 // Toggle favorite status

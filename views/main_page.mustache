@@ -116,12 +116,27 @@
             <td>{{genre}}</td>
             <td>
               <!-- Switch for Star Ratings -->
-              {{#fullStars}}
-              ★
-              {{/fullStars}}  <!-- Filled stars -->
-              {{#emptyStars}}
-              ☆
-              {{/emptyStars}}  <!-- Empty stars -->
+              {{#rating}}
+                {{#isRating1}}
+                  ★☆☆☆☆
+                {{/isRating1}}
+
+                {{#isRating2}}
+                  ★★☆☆☆
+                {{/isRating2}}
+
+                {{#isRating3}}
+                  ★★★☆☆
+                {{/isRating3}}
+
+                {{#isRating4}}
+                  ★★★★☆
+                {{/isRating4}}
+
+                {{#isRating5}}
+                  ★★★★★
+                {{/isRating5}}
+              {{/rating}}
             </td>
             <td>
             <!-- Loop for Favourite -->
