@@ -115,19 +115,16 @@
             <div class="mb-3">
                 <label for="moviename" class="form-label">Movie Title</label>
                 <input type="text" class="form-control" id="moviename" name="moviename" placeholder="Enter movie title" value="{{moviename}}">
-                <div id="movienameError" class="error">{{#errors}}<p>{{.}}</p>{{/errors}}</div>
             </div>
 
             <div class="mb-3">
                 <label for="review" class="form-label">Review</label>
                 <textarea class="form-control" id="review" name="review" rows="4" placeholder="Write your review here">{{review}}</textarea>
-                <div id="reviewError" class="error">{{#errors}}<p>{{.}}</p>{{/errors}}</div>
             </div>
 
             <div class="mb-3">
                 <label for="date_watched" class="form-label">Date Watched</label>
                 <input type="date" class="form-control" id="date_watched" name="date_watched" value="{{date_watched}}">
-                <div id="dateError" class="error">{{#errors}}<p>{{.}}</p>{{/errors}}</div>
             </div>
 
             <div class="mb-3">
@@ -138,7 +135,6 @@
                         <option value="{{.}}" {{#selectedGenre}}{{#isSelected}}{{/isSelected}}{{/selectedGenre}}>{{.}}</option>
                     {{/genres}}
                 </select>
-                <div id="genreError" class="error">{{#errors}}<p>{{.}}</p>{{/errors}}</div>
             </div>
 
             <div class="mb-3">
@@ -168,12 +164,16 @@
               <!-- Heart icon for toggle -->
               <i class="favorite heart {{#favourite}}fas fa-heart{{/favourite}}{{^favourite}}far fa-heart{{/favourite}}" id="heartIcon"></i>
               <!-- Hidden input to track favorite state -->
-              <input type="hidden" name="favourite" id="favourite" value="0">
-          </div>
+              <input type="hidden" name="favourite" id="favourite" value="{{#favourite}}1{{/favourite}}{{^favourite}}0{{/favourite}}">
+            </div>
 
 
             <button type="submit" class="btn btn-primary">Add Movie</button>
         </form>
+
+        <div id="errors" class="error">
+                    {{#errors}}<p>{{.}}</p>{{/errors}}
+                </div>
 
         <div class="container3">
             <div class="title7">© 2024 LetterSquared. All Rights Reserved.</div>
@@ -181,39 +181,6 @@
     </div>
 
     <script>
-        document.getElementById('movieForm').addEventListener('submit', function(event) {
-            let valid = true;
-
-            // Clear previous errors
-            document.getElementById('movienameError').innerText = '';
-            document.getElementById('reviewError').innerText = '';
-            document.getElementById('dateError').innerText = '';
-
-            // Movie Title Validation (must not be empty and length > 2)
-            const movieTitle = document.getElementById('moviename').value;
-            if (movieTitle.trim().length < 3) {
-                document.getElementById('movienameError').innerText = 'Movie title must be at least 3 characters long.';
-                valid = false;
-            }
-
-            // Review Validation (must not be empty and length > 5)
-            const review = document.getElementById('review').value;
-            if (review.trim().length < 6) {
-                document.getElementById('reviewError').innerText = 'Review must be at least 6 characters long.';
-                valid = false;
-            }
-
-            // Date Watched Validation (must be a valid date)
-            const dateWatched = document.getElementById('date_watched').value;
-            if (!dateWatched) {
-                document.getElementById('dateError').innerText = 'Please select a valid date.';
-                valid = false;
-            }
-
-            if (!valid) {
-                event.preventDefault(); // Prevent form submission if validation fails
-            }
-        });
 
        document.querySelector('.favorite.heart').addEventListener('click', function() {
           const heartIcon = this;

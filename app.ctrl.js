@@ -94,9 +94,20 @@ app.post('/addreview', async (req, res) => {
         errors.push('Please select a valid rating.');
     }
 
-    // If there are errors, send them back to the user
+    const genres = ['Action', 'Comedy', 'Drama', 'Horror', 'Romance']; // Define genres
+
+    // If there are errors, re-render the form with error messages and populated genres
     if (errors.length > 0) {
-        return res.status(400).json({ errors });
+        return res.render('add_form', {
+            errors,
+            moviename,
+            review,
+            date_watched,
+            rating,
+            genres: genres, // Pass genres to the template
+            favourite,
+            genre // Keep selected genre
+        });
     }
 
     // Capture the `favourite` field, default to `0` if not provided
