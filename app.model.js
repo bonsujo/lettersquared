@@ -27,34 +27,23 @@ async function getGenres() {
 }
 
 // Get filtered reviews
-async function getFilteredReviews(rating, genre, search) {
+async function getFilteredReviews(rating, genre) {
   const db = await makeConnection();
-  let query = 'SELECT * FROM Reviews WHERE 1=1';  // Base query
+  let query = 'SELECT * FROM Reviews WHERE 1=1';
   const params = [];
 
-  // Add rating filter if provided
   if (rating) {
     query += ' AND rating = ?';
     params.push(rating);
   }
-
-  // Add genre filter if provided
   if (genre) {
     query += ' AND genre = ?';
     params.push(genre);
   }
 
-  // Add search filter if provided
-  if (search) {
-    query += ' AND review LIKE ?';  // Assuming the 'review' column contains the text
-    params.push(`%${search}%`);  // '%' for partial matching
-  }
-
-  // Execute query with the parameters
   const rows = await db.all(query, params);
   return rows;
 }
-
 
 async function toggleFavorite(id) {
   const db = await makeConnection(); 

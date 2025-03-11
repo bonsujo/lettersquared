@@ -107,57 +107,57 @@
         </div>
     </nav>
 
-    <div class="container mt-5">
+      <div class="container mt-5">
         <h2>Add a Movie</h2>
         <p>Share your thoughts about a movie:</p>
 
         <form action="/addreview" method="POST" id="movieForm">
             <div class="mb-3">
                 <label for="moviename" class="form-label">Movie Title</label>
-                <input type="text" class="form-control" id="moviename" name="moviename" placeholder="Enter movie title" required>
-                <div id="movienameError" class="error"></div>
+                <input type="text" class="form-control" id="moviename" name="moviename" placeholder="Enter movie title" value="{{moviename}}">
+                <div id="movienameError" class="error">{{#errors}}<p>{{.}}</p>{{/errors}}</div>
             </div>
 
             <div class="mb-3">
                 <label for="review" class="form-label">Review</label>
-                <textarea class="form-control" id="review" name="review" rows="4" placeholder="Write your review here" required></textarea>
-                <div id="reviewError" class="error"></div>
+                <textarea class="form-control" id="review" name="review" rows="4" placeholder="Write your review here">{{review}}</textarea>
+                <div id="reviewError" class="error">{{#errors}}<p>{{.}}</p>{{/errors}}</div>
             </div>
 
             <div class="mb-3">
                 <label for="date_watched" class="form-label">Date Watched</label>
-                <input type="date" class="form-control" id="date_watched" name="date_watched" required>
-                <div id="dateError" class="error"></div>
+                <input type="date" class="form-control" id="date_watched" name="date_watched" value="{{date_watched}}">
+                <div id="dateError" class="error">{{#errors}}<p>{{.}}</p>{{/errors}}</div>
             </div>
 
             <div class="mb-3">
                 <label for="genre" class="form-label">Genre</label>
-                <select class="form-select" id="genre" name="genre" required>
+                <select class="form-select" id="genre" name="genre">
                     <option value="" disabled selected>Select a genre</option>
                     {{#genres}}
-                        <option value="{{.}}">{{.}}</option>
+                        <option value="{{.}}" {{#selectedGenre}}{{#isSelected}}{{/isSelected}}{{/selectedGenre}}>{{.}}</option>
                     {{/genres}}
                 </select>
-                <small class="form-text text-muted">Select the movie genre</small>
+                <div id="genreError" class="error">{{#errors}}<p>{{.}}</p>{{/errors}}</div>
             </div>
 
             <div class="mb-3">
                 <label class="form-label">Rating</label>
                 <div class="chip-group">
                     <label class="chip">
-                        <input type="radio" name="rating" value="1"> ⭐
+                        <input type="radio" name="rating" value="1" {{#rating}} checked {{/rating}}> ⭐
                     </label>
                     <label class="chip">
-                        <input type="radio" name="rating" value="2"> ⭐⭐
+                        <input type="radio" name="rating" value="1" {{#rating}} checked {{/rating}}> ⭐⭐
                     </label>
                     <label class="chip">
-                        <input type="radio" name="rating" value="3"> ⭐⭐⭐
+                        <input type="radio" name="rating" value="1" {{#rating}} checked {{/rating}}> ⭐⭐⭐
                     </label>
                     <label class="chip">
-                        <input type="radio" name="rating" value="4"> ⭐⭐⭐⭐
+                        <input type="radio" name="rating" value="1" {{#rating}} checked {{/rating}}> ⭐⭐⭐⭐
                     </label>
-                    <label class="chip2">
-                        <input type="radio" name="rating" value="5"> ⭐⭐⭐⭐⭐
+                    <label class="chip">
+                        <input type="radio" name="rating" value="1" {{#rating}} checked {{/rating}}> ⭐⭐⭐⭐
                     </label>
                 </div>
                 <small class="form-text text-muted">Rate the movie</small>

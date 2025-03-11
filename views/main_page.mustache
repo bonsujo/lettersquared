@@ -38,10 +38,10 @@
 
     <!-- Filter Form -->
 <form action="/" method="GET" class="row g-3 mb-4 justify-content-center">
-  <div class="col-md-3">
-    <input type="text" class="form-control" name="search" placeholder="Search movies" value="{{search}}">
+  <div class="col-md-3 col-sm-12">
+    <input type="text" class="form-control" name="search" placeholder="Search reviews" value="{{search}}">
   </div>
-  <div class="col-md-2">
+  <div class="col-md-2 col-sm-12">
     <select name="rating" class="form-control">
       <option value="">Select Rating</option>
       <option value="1" {{ratingSelected.1}}>1 Star</option>
@@ -51,7 +51,7 @@
       <option value="5" {{ratingSelected.5}}>5 Stars</option>
     </select>
   </div>
-  <div class="col-md-2">
+  <div class="col-md-2 col-sm-12">
     <select name="genre" class="form-control">
       <option value="">Select Genre</option>
       {{#genres}}
@@ -59,7 +59,7 @@
       {{/genres}}
     </select>
   </div>
-  <div class="col-md-2">
+  <div class="col-md-2 col-sm-12">
     <button type="submit" class="btn btn-primary w-100">Filter</button>
   </div>
 </form>
@@ -84,12 +84,16 @@
             <td>{{moviename}}</td>
             <td>{{genre}}</td>
             <td>
-              <!-- Loop for Star Ratings -->
-              {{#stars}}
-                <i class="fas fa-star text-warning"></i>
-              {{/stars}}
+              <!-- Switch for Star Ratings -->
+              {{#fullStars}}
+              ★
+              {{/fullStars}}  <!-- Filled stars -->
+              {{#emptyStars}}
+              ☆
+              {{/emptyStars}}  <!-- Empty stars -->
             </td>
             <td>
+            <!-- Loop for Favourite -->
               {{#favourite}}
                 <i class="fas fa-heart text-danger"></i>
               {{/favourite}}

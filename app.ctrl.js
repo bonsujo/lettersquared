@@ -31,8 +31,9 @@ app.get('/', async (req, res) => {
     const reviewsWithStars = reviews.map(review => {
         return {
             ...review,
-            stars: Array(review.rating).fill(1),  
-            favourite: review.favourite === 1  
+            fullStars: Array(review.rating).fill(1), // Filled stars (★)
+            emptyStars: Array(5 - review.rating).fill(1), // Empty stars (☆)
+            favourite: review.favourite === 1,
         };
     });
 
